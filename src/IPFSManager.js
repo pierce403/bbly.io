@@ -2,12 +2,13 @@ import IPFS from "ipfs";
 import Room from "ipfs-pubsub-room";
 
 let room;
+let peerCount = 0;
 
 export function broadcastThing(thing) {
   room.broadcast(thing);
 }
 
-export function initIPFS({ onAddBubble }) {
+export function initIPFS({ onAddBubble, onAddPeer }) {
   const ipfs = new IPFS({
     repo: "ipfs/pubsub-demo/" + Math.random(),
     EXPERIMENTAL: {
@@ -16,8 +17,8 @@ export function initIPFS({ onAddBubble }) {
     config: {
       Addresses: {
         Swarm: [
-          "/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star"
-          //"/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star"
+          //"/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star"
+          "/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star"
         ]
       }
     }
@@ -32,11 +33,21 @@ export function initIPFS({ onAddBubble }) {
 
       room = Room(ipfs, "bbly-news");
 
-      room.on("peer joined", peer => console.log("peer " + peer + " joined"));
-      room.on("peer left", peer => console.log("peer " + peer + " left"));
+      room.on("peer joined", peer => {
+        console.log("peer " + peer + " joined");
+
+        peerCount--;
+        onAddPeer(peerCount);
+      });
+      room.on("peer left", peer => {
+        console.log("peer " + peer + " left");
+        peerCount--;
+        onAddPeer(peerCount);
+      });
 
       // send and receive messages
-      room.on("peer joined", peer => room.sendTo(peer, "Hello " + peer + "!"));
+      // room.on("peer joined", peer => room.sendTo(peer, "Hello " + peer + "!"));
+
       room.on("message", message => {
         //const newBubble = new Bubble();
         //newBubble.title = ;

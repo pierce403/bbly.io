@@ -6,6 +6,7 @@ import { initIPFS, broadcastThing } from "./IPFSManager";
 
 class App extends Component {
   state = {
+    peerCount: 0,
     toggle: true,
     bubbleList: [
       { title: "first thing", score: 0, id: "bubble" + Math.random() },
@@ -18,6 +19,9 @@ class App extends Component {
     initIPFS({
       onAddBubble: bubble => {
         this.setState({ bubbleList: [...this.state.bubbleList, bubble] });
+      },
+      onAddPeer: newCount => {
+        this.setState({ peerCount: newCount });
       }
     });
   }
@@ -63,10 +67,9 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-
+          peers: {this.state.peerCount}
           <BubbleBlower />
           <br />
-
           <ul className="list-group">
             {sortedBubbles.slice(0, 10).map(bubble => {
               return (
@@ -81,7 +84,6 @@ class App extends Component {
               );
             })}
           </ul>
-
           {/* <button onClick={this.toggle}>show/hide</button>
           {this.state.toggle && (
             <p>
@@ -97,25 +99,25 @@ class App extends Component {
 class Bubble extends Component {
   render() {
     return (
-      <div className="card border-secondary mb-3 text-left">
+      <div className="card border-secondary mb-3 m-3 text-left">
         <div className="card-body">
-          <button className="btn btn-outline-secondary">
+          <button className="btn btn-outline-secondary m-1">
             {this.props.score}
           </button>
 
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary m-1"
             onClick={this.props.onUpvote}
           >
             <span className="fa fa-smile-o" />
           </button>
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary m-1"
             onClick={this.props.onDownvote}
           >
             <span className="fa fa-frown-o" />
           </button>
-          {this.props.title}
+          <span className="m-3">{this.props.title}</span>
         </div>
       </div>
     );
@@ -138,7 +140,7 @@ class BubbleBlower extends Component {
               name="name"
               value={this.state.value}
               onChange={this.handleChange}
-              onMouseEnter={() => console.log("enter")}
+              //onMouseEnter={() => console.log("enter")}
             />
           </div>
 
