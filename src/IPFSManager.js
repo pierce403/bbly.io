@@ -53,6 +53,7 @@ export function initIPFS({ onAddBubble, onAddPeer }) {
         //newBubble.title = ;
 
         onAddBubble({
+          type: "news",
           title: message.data.toString(),
           score: 0,
           id: "bubble" + Math.random()
