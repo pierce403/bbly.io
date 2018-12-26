@@ -36,7 +36,7 @@ export function initIPFS({ onAddBubble, onAddPeer }) {
       room.on("peer joined", peer => {
         console.log("peer " + peer + " joined");
 
-        peerCount--;
+        peerCount++;
         onAddPeer(peerCount);
       });
       room.on("peer left", peer => {
