@@ -1,4 +1,4 @@
-yarn build &&
+npm run build --verbose &&
 git rm -rf docs &&
 cp -rv  build docs &&
 echo bbly.io > docs/CNAME
