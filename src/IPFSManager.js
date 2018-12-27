@@ -4,11 +4,43 @@ import Room from "ipfs-pubsub-room";
 let room;
 let peerCount = 0;
 
+let bubbleList = [
+  {
+    title: "first thing",
+    score: 0,
+    happy: 0,
+    sad: 0,
+    id: "bubble-888"
+  },
+  {
+    title: "second thing",
+    score: 1,
+    happy: 0,
+    sad: 3,
+    id: "bubble-999"
+  }
+];
+
+export function getTopBubbles() {
+  const sortedBubbles = bubbleList.slice();
+  sortedBubbles.sort((left, right) => {
+    if (left.score > right.score) {
+      return -1;
+    } else if (left.score < right.score) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  return sortedBubbles;
+}
+
 export function broadcastThing(thing) {
   room.broadcast(thing);
 }
 
-export function initIPFS({ onAddBubble, onAddPeer }) {
+export function initIPFS({ onBubbleChange, onPeerChange }) {
   const ipfs = new IPFS({
     repo: "ipfs/pubsub-demo/" + Math.random(),
     EXPERIMENTAL: {
@@ -37,31 +69,47 @@ export function initIPFS({ onAddBubble, onAddPeer }) {
         console.log("peer " + peer + " joined");
 
         peerCount++;
-        onAddPeer(peerCount);
+        onPeerChange(peerCount);
       });
       room.on("peer left", peer => {
         console.log("peer " + peer + " left");
         peerCount--;
-        onAddPeer(peerCount);
+        onPeerChange(peerCount);
       });
 
       // send and receive messages
       // room.on("peer joined", peer => room.sendTo(peer, "Hello " + peer + "!"));
 
       room.on("message", message => {
-        //const newBubble = new Bubble();
-        //newBubble.title = ;
+        const messageObject = JSON.parse(message.data.toString());
+        console.log(messageObject);
 
-        onAddBubble({
-          type: "news",
-          title: message.data.toString(),
-          score: 0,
-          id: "bubble" + Math.random()
-        });
-        //bubbleList.push(newBubble);
-        console.log(
-          "got message from " + message.from + ": " + message.data.toString()
-        );
+        if (messageObject["type"] === "vote") {
+          for (let x = 0; x < bubbleList.length; ++x) {
+            // find the bubble
+            if (bubbleList[x].id === messageObject["id"]) {
+              if (messageObject["emotion"] === "happy") bubbleList[x].happy++;
+              if (messageObject["emotion"] === "sad") bubbleList[x].sad++;
+
+              bubbleList[x].score = bubbleList[x].happy - bubbleList[x].sad;
+            }
+          }
+
+          onBubbleChange();
+          return;
+        }
+
+        if (messageObject["type"] === "story") {
+          bubbleList.push({
+            title: messageObject["title"],
+            score: 0,
+            happy: 0,
+            sad: 0,
+            id: messageObject["id"]
+          });
+
+          onBubbleChange();
+        }
       });
 
       // broadcast message every 2 seconds
