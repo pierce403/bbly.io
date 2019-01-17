@@ -4,22 +4,30 @@ import Room from "ipfs-pubsub-room";
 let room;
 let peerCount = 0;
 
-let bubbleList = [
-  {
-    title: "first thing",
-    score: 0,
-    happy: 0,
-    sad: 0,
-    id: "bubble-888"
-  },
-  {
-    title: "second thing",
-    score: 1,
-    happy: 0,
-    sad: 3,
-    id: "bubble-999"
-  }
-];
+let bubbleList = [];
+if (localStorage.getItem("bubbleList") == null) {
+  console.log("loading default bubbles");
+  bubbleList = [
+    {
+      title: "Welcome to BBLY.IO!",
+      link: "https://bbly.io",
+      summary: "This site is pretty fun, hope you enjoy it!",
+      score: 0,
+      awesome: 0,
+      hilarious: 0,
+      enlightening: 0,
+      solidarity: 0,
+      scammy: 0,
+      poopy: 0,
+      hateful: 0,
+
+      id: "bubble-777"
+    }
+  ];
+} else {
+  console.log("loading stored bubbles");
+  bubbleList = JSON.parse(localStorage.getItem("bubbleList"));
+}
 
 export function getTopBubbles() {
   const sortedBubbles = bubbleList.slice();
@@ -88,13 +96,32 @@ export function initIPFS({ onBubbleChange, onPeerChange }) {
           for (let x = 0; x < bubbleList.length; ++x) {
             // find the bubble
             if (bubbleList[x].id === messageObject["id"]) {
-              if (messageObject["emotion"] === "happy") bubbleList[x].happy++;
-              if (messageObject["emotion"] === "sad") bubbleList[x].sad++;
+              if (messageObject["emotion"] === "awesome")
+                bubbleList[x].awesome++;
+              if (messageObject["emotion"] === "hilarious")
+                bubbleList[x].hilarious++;
+              if (messageObject["emotion"] === "enlightening")
+                bubbleList[x].enlightening++;
+              if (messageObject["emotion"] === "solidarity")
+                bubbleList[x].solidarity++;
+              if (messageObject["emotion"] === "scammy") bubbleList[x].scammy++;
+              if (messageObject["emotion"] === "poopy") bubbleList[x].poopy++;
+              if (messageObject["emotion"] === "hateful")
+                bubbleList[x].hateful++;
 
-              bubbleList[x].score = bubbleList[x].happy - bubbleList[x].sad;
+              bubbleList[x].score =
+                bubbleList[x].awesome +
+                bubbleList[x].hilarious +
+                bubbleList[x].enlightening +
+                bubbleList[x].solidarity -
+                bubbleList[x].scammy -
+                bubbleList[x].poopy -
+                bubbleList[x].hateful * 10;
             }
           }
 
+          console.log("stored " + bubbleList.length + " bubbles!");
+          localStorage.setItem("bubbleList", JSON.stringify(bubbleList));
           onBubbleChange();
           return;
         }
@@ -103,17 +130,20 @@ export function initIPFS({ onBubbleChange, onPeerChange }) {
           bubbleList.push({
             title: messageObject["title"],
             score: 0,
-            happy: 0,
-            sad: 0,
+            awesome: 0,
+            hilarious: 0,
+            enlightening: 0,
+            solidarity: 0,
+            hateful: 0,
+            poopy: 0,
+            scammy: 0,
+
             id: messageObject["id"]
           });
 
           onBubbleChange();
         }
       });
-
-      // broadcast message every 2 seconds
-      //setInterval(() => room.broadcast("OMG BUBBLES!"), 2000);
     })
   );
 }

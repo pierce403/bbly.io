@@ -37,22 +37,72 @@ class App extends Component {
                   <Bubble
                     title={bubble.title}
                     score={bubble.score}
-                    happy={bubble.happy}
-                    sad={bubble.sad}
-                    onHappy={() => {
+                    awesome={bubble.awesome}
+                    hilarious={bubble.hilarious}
+                    enlightening={bubble.enlightening}
+                    solidarity={bubble.solidarity}
+                    scammy={bubble.scammy}
+                    poopy={bubble.poopy}
+                    hateful={bubble.hateful}
+                    onAwesome={() => {
                       broadcastThing(
                         JSON.stringify({
                           type: "vote",
-                          emotion: "happy",
+                          emotion: "awesome",
                           id: bubble.id
                         })
                       );
                     }}
-                    onSad={() => {
+                    onHilarious={() => {
                       broadcastThing(
                         JSON.stringify({
                           type: "vote",
-                          emotion: "sad",
+                          emotion: "hilarious",
+                          id: bubble.id
+                        })
+                      );
+                    }}
+                    onEnlightening={() => {
+                      broadcastThing(
+                        JSON.stringify({
+                          type: "vote",
+                          emotion: "enlightening",
+                          id: bubble.id
+                        })
+                      );
+                    }}
+                    onSolidarity={() => {
+                      broadcastThing(
+                        JSON.stringify({
+                          type: "vote",
+                          emotion: "solidarity",
+                          id: bubble.id
+                        })
+                      );
+                    }}
+                    onScammy={() => {
+                      broadcastThing(
+                        JSON.stringify({
+                          type: "vote",
+                          emotion: "scammy",
+                          id: bubble.id
+                        })
+                      );
+                    }}
+                    onPoopy={() => {
+                      broadcastThing(
+                        JSON.stringify({
+                          type: "vote",
+                          emotion: "poopy",
+                          id: bubble.id
+                        })
+                      );
+                    }}
+                    onHateful={() => {
+                      broadcastThing(
+                        JSON.stringify({
+                          type: "vote",
+                          emotion: "hateful",
                           id: bubble.id
                         })
                       );
@@ -76,20 +126,53 @@ class Bubble extends Component {
           <button className="btn btn-outline-secondary m-1">
             {this.props.score}
           </button>
-
-          <button
-            className="btn btn-outline-secondary m-1"
-            onClick={this.props.onHappy}
-          >
-            <span className="fa fa-smile-o"> {this.props.happy} </span>
-          </button>
-          <button
-            className="btn btn-outline-secondary m-1"
-            onClick={this.props.onSad}
-          >
-            <span className="fa fa-frown-o"> {this.props.sad} </span>
-          </button>
           <span className="m-3">{this.props.title}</span>
+          <br />
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onAwesome}
+          >
+            <span className="fa fa-grin-stars"> {this.props.awesome} </span>
+          </button>
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onHilarious}
+          >
+            <span className="fa fa-grin-squint-tears">
+              {" "}
+              {this.props.hilarious}{" "}
+            </span>
+          </button>
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onEnlightening}
+          >
+            <span className="fa fa-lightbulb"> {this.props.enlightening} </span>
+          </button>
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onSolidarity}
+          >
+            <span className="fa fa-fist-raised"> {this.props.solidarity} </span>
+          </button>{" "}
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onScammy}
+          >
+            <span className="fa fa-dollar-sign"> {this.props.scammy} </span>
+          </button>
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onPoopy}
+          >
+            <span className="fa fa-poop"> {this.props.poopy} </span>
+          </button>
+          <button
+            className="btn btn-outline-secondary m-1"
+            onClick={this.props.onHateful}
+          >
+            <span className="fa fa-skull"> {this.props.hateful} </span>
+          </button>
         </div>
       </div>
     );
