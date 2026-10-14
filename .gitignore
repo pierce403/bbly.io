@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+/cloudflare/node_modules/
+/dist/
+/.wrangler/
+/cloudflare/.wrangler/
+!/cloudflare/package-lock.json

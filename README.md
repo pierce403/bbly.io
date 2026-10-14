@@ -42,3 +42,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Cloudflare public hosting
+
+Native Git publishes master from /cloudflare with npm ci, npm run build
+and npm run deploy. The isolated hosting package copies the existing public docs/ HTML as the previous Pages publisher did.
+Original application builds, runtime and Pages recovery stay available. Credentials
+remain in Cloudflare; previews are disabled. Verify with cd cloudflare && npm ci
+&& npm run check:deploy. Local services and wallets are not hosted.
